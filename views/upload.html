@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPC Fixr</title>
+    <link rel="shortcut icon" href="/imgs/barcode.png" />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/stylesheets/main.css">
+  </head>
+  <body>
+    <section>
+      <div id="brand">
+        <img id="logo" src="/imgs/barcode.png" alt="upc-fixr-logo">
+        <h1>UPC Fixr</h1>
+      </div>
+
+      <form action="/results" method="POST" enctype="multipart/form-data">
+        <label>Manufacturer ID:</label>
+        <input type="text" placeholder='Enter Manufacturer ID' name="manid" />
+        <label>Brand ID:</label>
+        <input type="text" placeholder='Enter Brand ID' name="brandid" />
+        <label>Upload Excel File:</label>
+        <input type="file" accept=".xlsx" value='' name="file" />
+        <input value="Shazam!" type="submit" />
+      </form>
+    </section>
+
+  </body>
+</html>
