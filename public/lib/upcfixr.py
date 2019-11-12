@@ -1,3 +1,4 @@
+import sys
 import pandas as pd
 
 #VARIABLES NEEDED:
@@ -6,9 +7,9 @@ import pandas as pd
 #destination - joined target + filename
 #manid - manid from form
 #brandid - brandid from form
+# print(sys.argv[1:])
 
-
-df = pd.read_excel(destination,converters={'upc_given':str}) #reading client provided excel file
+df = pd.read_excel('./public/uploads/UPCstoUploadtoAdmin.xlsx') #reading client provided excel file
 df.columns = ['manufacturer_name','brand_name','sub_brand','product_category','product_sub_category','upc_given','product_description','quantity_pack_size','size','average_msrp','offer_id'] #labeling colummn names in data frame
 df['upc_given'] = df.upc_given.astype(str) #changes data type to strings
 df['offer_id'] = df.offer_id.astype(str) #changes data type to strings
@@ -198,6 +199,6 @@ csvfinal['Product Description'] = df['product_description']
 csvfinal[['offer product group id','Costco Code','Target DPCI','Sams Item Code','Generate Check Digit']]=""
 
 csvfinal = csvfinal[csvfinal.UPC != 'gerd dammit']
-os.remove(destination)
+#os.remove(destination)
 
-csvfinal.to_csv(target + '/UPCstoUploadtoAdmin.csv')
+csvfinal.to_csv('./public/uploads/UPCstoUploadtoAdmin.csv')

@@ -3,6 +3,8 @@
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
+const path = require('path')
+const {spawn} = require('child_process');
 
 // Setup static dir
 app.use(express.static(__dirname + '/public'));
@@ -15,7 +17,7 @@ const storage = multer.diskStorage({
     callback(null, './public/uploads/')
   },
   filename: function(req, file, callback){
-    callback(null, 'uploadedFileToCsv.csv')
+    callback(null, 'uploadedFileToCsv.xlsx')
   }
 });
 
@@ -28,11 +30,7 @@ app.get('/', (req, res) => {
 });
 
 // Post results route
-app.post('/results', upload.single('file'), (req, res) => {
-  //console.log(req.body.manid);
-  //console.log(req.body.brandid);
-  res.sendFile(__dirname + '/views/results.html');
-});
+app.post('/results', upload.single('file'), runPython)
 
 
 // SERVER CONFIG
@@ -40,3 +38,28 @@ app.post('/results', upload.single('file'), (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
+
+// EXTERNAL SCRIPT
+// Python run function
+async function runPython(req, res) {
+  const subprocess = await spawn('python', [
+    "-u",
+    path.join(__dirname, '/public/lib/upcfixr.py'),
+    req.body.manid,
+    req.body.brandid
+  ]);
+  subprocess.stdout.on('data', (data) => {
+    if(subprocess.stderr.on('data', () => {
+       return true;
+    })) {
+       console.log(`Python returned an ERROR!!`);
+       res.sendFile(__dirname + '/views/error.html');
+    } else {
+       console.log(`Data: ${data.toString()}`);
+       res.sendFile(__dirname + '/views/results.html');
+    }
+  })
+  subprocess.on('close', () => {
+    console.log("Closed");
+  });
+}
