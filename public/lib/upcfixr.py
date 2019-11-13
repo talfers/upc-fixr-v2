@@ -9,7 +9,7 @@ import pandas as pd
 #brandid - brandid from form
 # print(sys.argv[1:])
 
-df = pd.read_excel('./public/uploads/UPCstoUploadtoAdmin.xlsx') #reading client provided excel file
+df = pd.read_excel('./public/uploads/uploadedExcelFile.xlsx') #reading client provided excel file
 df.columns = ['manufacturer_name','brand_name','sub_brand','product_category','product_sub_category','upc_given','product_description','quantity_pack_size','size','average_msrp','offer_id'] #labeling colummn names in data frame
 df['upc_given'] = df.upc_given.astype(str) #changes data type to strings
 df['offer_id'] = df.offer_id.astype(str) #changes data type to strings
@@ -130,7 +130,7 @@ upc_fixed=[]
 
 #groups the client provided UPCs by length and applies the appropriate formatting function based on the mode of the fix type
 def upcfixer(y, x):
-    print (y)
+    # print (y)
     if x == 14:
         if int(gk.get_group(14).loc[:,'upc_fix_type'].mode()) == 1:
             upc_fixed.append(upcfxr14op1(y))
@@ -190,8 +190,8 @@ csvfinal = pd.DataFrame(columns = ['Offer ID','Manufacturer ID','Brand ID','Prod
 csvfinal['UPC'].to_string()
 
 csvfinal['UPC'] = df['upc_fixed_final']
-csvfinal['Manufacturer ID'] = manid
-csvfinal['Brand ID'] = brandid
+csvfinal['Manufacturer ID'] = sys.argv[1]
+csvfinal['Brand ID'] = sys.argv[2]
 csvfinal['Product Size'] = '1'
 csvfinal['SIZE UOM'] = 'ct'
 csvfinal['Offer ID'] = df['offer_id']
@@ -201,4 +201,6 @@ csvfinal[['offer product group id','Costco Code','Target DPCI','Sams Item Code',
 csvfinal = csvfinal[csvfinal.UPC != 'gerd dammit']
 #os.remove(destination)
 
-csvfinal.to_csv('./public/uploads/UPCstoUploadtoAdmin.csv')
+csvfinal.to_csv('./public/uploads/csvToUploadToAdmin.csv')
+
+print('Python success!')

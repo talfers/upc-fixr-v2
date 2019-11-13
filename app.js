@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
     callback(null, './public/uploads/')
   },
   filename: function(req, file, callback){
-    callback(null, 'uploadedFileToCsv.xlsx')
+    callback(null, 'uploadedExcelFile.xlsx')
   }
 });
 
@@ -30,7 +30,9 @@ app.get('/', (req, res) => {
 });
 
 // Post results route
-app.post('/results', upload.single('file'), runPython)
+app.post('/results', upload.single('file'), (req, res) => {
+  !req.file?res.redirect("/"):runPython(req, res);
+})
 
 
 // SERVER CONFIG
@@ -48,18 +50,16 @@ async function runPython(req, res) {
     req.body.manid,
     req.body.brandid
   ]);
+
+  subprocess.stderr.on('data', (error) => {
+    console.log(`Error from python! Error: ${error}`);
+    res.sendFile(__dirname + '/views/error.html');
+  })
   subprocess.stdout.on('data', (data) => {
-    if(subprocess.stderr.on('data', () => {
-       return true;
-    })) {
-       console.log(`Python returned an ERROR!!`);
-       res.sendFile(__dirname + '/views/error.html');
-    } else {
-       console.log(`Data: ${data.toString()}`);
-       res.sendFile(__dirname + '/views/results.html');
-    }
+    console.log(`Process complete: ${data.toString()}`);
+    res.sendFile(__dirname + '/views/results.html');
   })
   subprocess.on('close', () => {
-    console.log("Closed");
+    console.log("All done!");
   });
 }
