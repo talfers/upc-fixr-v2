@@ -3,7 +3,7 @@
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
-const path = require('path')
+const path = require('path');
 const {spawn} = require('child_process');
 
 // Setup static dir
@@ -14,10 +14,10 @@ const multer = require('multer');
 
 const storage = multer.diskStorage({
   destination: function(req, file, callback){
-    callback(null, './public/uploads/')
+    callback(null, './public/uploads/');
   },
   filename: function(req, file, callback){
-    callback(null, 'uploadedExcelFile.xlsx')
+    callback(null, 'uploadedExcelFile.xlsx');
   }
 });
 
@@ -51,10 +51,10 @@ async function runPython(req, res) {
     req.body.brandid
   ]);
   subprocess.stderr.on('data', (error) => {
-    scriptData.errors.push(error.toString())
+    scriptData.errors.push(error.toString());
   })
   subprocess.stdout.on('data', (data) => {
-    scriptData.output.push(data.toString())
+    scriptData.output.push(data.toString());
   })
   subprocess.on('close', () => {
     console.log("All done!");
