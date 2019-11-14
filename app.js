@@ -44,7 +44,7 @@ app.listen(PORT, () => {
 // Python run function
 async function runPython(req, res) {
   let scriptData = {output: [], errors: []};
-  const subprocess = await spawn('python', [
+  const subprocess = await spawn('python3', [
     "-u",
     path.join(__dirname, '/public/lib/upcfixr.py'),
     req.body.manid,
