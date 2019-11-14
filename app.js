@@ -34,7 +34,6 @@ app.post('/results', upload.single('file'), (req, res) => {
   !req.file?res.redirect("/"):runPython(req, res);
 })
 
-
 // SERVER CONFIG
 // Start express server
 app.listen(PORT, () => {
@@ -44,22 +43,29 @@ app.listen(PORT, () => {
 // EXTERNAL SCRIPT
 // Python run function
 async function runPython(req, res) {
+  let scriptData = {output: [], errors: []};
   const subprocess = await spawn('python', [
     "-u",
     path.join(__dirname, '/public/lib/upcfixr.py'),
     req.body.manid,
     req.body.brandid
   ]);
-
   subprocess.stderr.on('data', (error) => {
-    console.log(`Error from python! Error: ${error}`);
-    res.sendFile(__dirname + '/views/error.html');
+    scriptData.errors.push(error.toString())
   })
   subprocess.stdout.on('data', (data) => {
-    console.log(`Process complete: ${data.toString()}`);
-    res.sendFile(__dirname + '/views/results.html');
+    scriptData.output.push(data.toString())
   })
   subprocess.on('close', () => {
     console.log("All done!");
+    if(scriptData.errors.length > 0) {
+      console.log('THERE WERE ERRORS!');
+      console.log(scriptData.errors);
+      res.sendFile(__dirname + '/views/error.html');
+    } else {
+      console.log("SUCCESS!");
+      console.log(scriptData.output);
+      res.sendFile(__dirname + '/views/results.html');
+    }
   });
 }

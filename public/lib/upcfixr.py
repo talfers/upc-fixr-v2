@@ -1,14 +1,6 @@
 import sys
 import pandas as pd
 
-#VARIABLES NEEDED:
-#target - dir path to uploaded file
-#filename - name of uploaded file
-#destination - joined target + filename
-#manid - manid from form
-#brandid - brandid from form
-# print(sys.argv[1:])
-
 df = pd.read_excel('./public/uploads/uploadedExcelFile.xlsx') #reading client provided excel file
 df.columns = ['manufacturer_name','brand_name','sub_brand','product_category','product_sub_category','upc_given','product_description','quantity_pack_size','size','average_msrp','offer_id'] #labeling colummn names in data frame
 df['upc_given'] = df.upc_given.astype(str) #changes data type to strings
@@ -202,5 +194,5 @@ csvfinal = csvfinal[csvfinal.UPC != 'gerd dammit']
 #os.remove(destination)
 
 csvfinal.to_csv('./public/uploads/csvToUploadToAdmin.csv')
-
-print('Python success!')
+if not csvfinal.empty:
+    print('Python success!')
